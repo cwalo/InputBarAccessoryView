@@ -65,11 +65,11 @@ open class AutocompleteManager: NSObject, InputManager, UITableViewDelegate, UIT
         ["@":[NSAttributedStringKey.foregroundColor : UIColor(red: 0, green: 122/255, blue: 1, alpha: 1),
               NSAttributedStringKey.backgroundColor : UIColor(red: 0, green: 122/255, blue: 1, alpha: 0.1)]]
     
-    private var highlightedSubstrings = [Character:[String]]()
-    private var autocompleteText = [String]()
-    private var currentPrefix: Character?
-    private var currentPrefixRange: Range<Int>?
-    private var currentFilter: String? {
+    public var highlightedSubstrings = [Character:[String]]()
+    public var autocompleteText = [String]()
+    public var currentPrefix: Character?
+    public var currentPrefixRange: Range<Int>?
+    public var currentFilter: String? {
         didSet {
             tableView.reloadData()
             tableView.invalidateIntrinsicContentSize()
@@ -135,7 +135,7 @@ open class AutocompleteManager: NSObject, InputManager, UITableViewDelegate, UIT
 
     // MARK: - UITextViewDelegate
    
-    public func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
+    open func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
         
         // Ensure that the text to be inserted is not using previous attributes
         resetTypingAttributes()
@@ -227,7 +227,7 @@ open class AutocompleteManager: NSObject, InputManager, UITableViewDelegate, UIT
     
     // MARK: - Autocomplete
     
-    private func registerCurrentPrefix(to prefix: Character, at range: Range<Int>) {
+    public func registerCurrentPrefix(to prefix: Character, at range: Range<Int>) {
         
         guard delegate?.autocompleteManager(self, shouldRegister: prefix, at: range) != false else { return }
         currentPrefix = prefix
@@ -237,7 +237,7 @@ open class AutocompleteManager: NSObject, InputManager, UITableViewDelegate, UIT
         delegate?.autocompleteManager(self, shouldBecomeVisible: true)
     }
     
-    private func unregisterCurrentPrefix() {
+    public func unregisterCurrentPrefix() {
         
         guard let prefix = currentPrefix else { return }
         guard delegate?.autocompleteManager(self, shouldUnregister: prefix) != false else { return }
@@ -306,7 +306,7 @@ open class AutocompleteManager: NSObject, InputManager, UITableViewDelegate, UIT
     /// A safe way to generate an offset to the current prefix
     ///
     /// - Returns: An offset that is not more than the endIndex or less than the startIndex
-    private func safeOffset(withText text: String) -> Int {
+    public func safeOffset(withText text: String) -> Int {
         
         guard let range = currentPrefixRange else { return 0 }
         if text.count == 0 {
